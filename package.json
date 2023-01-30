@@ -34,7 +34,7 @@
     "trailingComma": "es5"
   },
   "name": "roulette-display-manager",
-  "author": "jin13095",
+  "author": "bbb169",
   "module": "dist/roulette-display-manager.esm.js",
   "size-limit": [
     {
