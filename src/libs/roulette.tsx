@@ -1,58 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { WidgetInfo, RouletteProps } from '../utils/roulette'
-
-const L:React.CSSProperties  = {
-    position: 'absolute',
-    overflow: 'hidden',
-    width: 400,
-    height: 400,
-    borderRadius: 200,
-    opacity: 0
-}
-const innerCircle:React.CSSProperties  = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translateX(-50%) translateY(-50%)',
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: 'white',
-    zIndex: 999,
-    border: '2px solid rgba(0,0,0,0.4)',
-    textAlign:'center'
-}
-
-const LUlLi:React.CSSProperties  = {
-    listStyle: 'none',
-    position: 'absolute',
-    width: 200,
-    height: 200,
-    right: '50%',
-    top: 0,
-    opacity: 0.3,
-    transformOrigin: '100% 100%',
-    backgroundColor: 'black',
-    border: '5px solid rgba(255, 255, 255, 0.3)',
-    boxSizing: 'border-box',
-}
+import { innerCircle, L, LUlLi } from './react-css/css'
 
 const list: number[] = []
 const elementList: JSX.Element[] = []
+let widgetsMap: Map<number, WidgetInfo> = new Map()
 for (let index = 0; index < 10; index++) {
     list.push(index)
     elementList.push(<div key={index}></div>)
 }
 
-let widgetsMap: Map<number, WidgetInfo> = new Map()
-
 export function Roulette(props:{allwidget:[ RouletteProps ]}) {
-
-    // const [icons, setIcons]: [JSX.Element[], Function] = useState(elementList)
     const [centerText,setCenterText]:[string,any] = useState('')
     const wheelRef: React.MutableRefObject<any> = useRef(null)
 
-    useEffect(()=>{
+    useEffect(()=>{ //set widget to wheel
         const widgets = props.allwidget
         widgets.forEach(e=>{
             widgetsMap.set(e.position?e.position<10?e.position:findEmpty():findEmpty(), {
@@ -73,7 +35,7 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
         })
     },[])
 
-    useEffect(() => {
+    useEffect(() => { //show wheel when key "ESC" down
         let locateAllow = false
         let keyDown = false
         let location: [number, number]
@@ -111,7 +73,71 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
     }, [])
 
 
-    const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    // const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = (e) => { //hightlight wheel part when mouse enter
+    //     e.currentTarget.style.opacity = '0.6'
+    //     e.currentTarget.style.border = 'none'
+    //     e.currentTarget.style.zIndex='9999'
+    //     let targetId = e.currentTarget.id.replace('wheel-', '')
+    //     console.log(7-Number(targetId))
+    //     if (widgetsMap.has(7-Number(targetId))) {
+    //         setCenterText(widgetsMap.get(7-Number(targetId))?.label)
+    //     }
+    // }
+
+    // const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = (e) => { //make wheel part back to normal
+    //     e.currentTarget.style.opacity = '0.3'
+    //     e.currentTarget.style.border = '5px solid rgba(255, 255, 255, 0.3)'
+    //     e.currentTarget.style.zIndex='1'
+    //     if (centerText) {
+    //         setCenterText('')
+    //     }
+        
+    // }
+
+    // const onClick :React.MouseEventHandler<HTMLDivElement> =(e)=>{
+    //     let targetId = e.currentTarget.id.replace('wheel-', '') //get id of wheel part
+    //     let getWidget = document.querySelector(`[roulette-id="${widgetsMap.get(7 - Number(targetId))?.id}"]`) as HTMLDivElement
+    //     if (!getWidget) return
+    //     getWidget?.style.opacity!='0'?getWidget.style.opacity='0':getWidget.style.opacity='1'
+    // }
+
+    return <div style={L} ref={wheelRef}>
+        <div style={innerCircle} key={'-1'}>
+            {PartContent()}
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 25 }} key={'-1'}>{centerText}</div>
+        </div>
+        {wheelParts()}
+    </div>
+
+    function wheelParts() {
+        return list.map(e => {
+            return <div style={{ ...wheelPart(e), ...LUlLi }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${e}`} onClick={onClick} key={e}></div>
+        })
+    }
+
+    function PartContent() {
+        return list.map(e => {
+            return <div style={PartContentStyle(e)} key={e}>{elementList[e]&&elementList[e]}</div>
+        })
+    }
+
+    function onMouseLeave (e:React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        e.currentTarget.style.opacity = '0.3'
+        e.currentTarget.style.border = '5px solid rgba(255, 255, 255, 0.3)'
+        e.currentTarget.style.zIndex='1'
+        if (centerText) {
+            setCenterText('')
+        }
+    }
+
+    function onClick(e:React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        let targetId = e.currentTarget.id.replace('wheel-', '') //get id of wheel part
+        let getWidget = document.querySelector(`[roulette-id="${widgetsMap.get(7 - Number(targetId))?.id}"]`) as HTMLDivElement
+        if (!getWidget) return
+        getWidget?.style.opacity!='0'?getWidget.style.opacity='0':getWidget.style.opacity='1'
+    }
+
+    function onMouseEnter(e:React.MouseEvent<HTMLDivElement, MouseEvent>) {
         e.currentTarget.style.opacity = '0.6'
         e.currentTarget.style.border = 'none'
         e.currentTarget.style.zIndex='9999'
@@ -121,50 +147,13 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
             setCenterText(widgetsMap.get(7-Number(targetId))?.label)
         }
     }
-
-    const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = (e) => {
-        e.currentTarget.style.opacity = '0.3'
-        e.currentTarget.style.border = '5px solid rgba(255, 255, 255, 0.3)'
-        e.currentTarget.style.zIndex='1'
-        if (centerText) {
-            setCenterText('')
-        }
-        
-    }
-
-    const onClick :React.MouseEventHandler<HTMLDivElement> =(e)=>{
-        let targetId = e.currentTarget.id.replace('wheel-', '')
-        console.log(widgetsMap.get(7-Number(targetId)))
-        let getWidget = document.querySelector(`[roulette-id="${widgetsMap.get(7 - Number(targetId))?.id}"]`) as HTMLDivElement
-        if (!getWidget) return
-        getWidget?.style.opacity!='0'?getWidget.style.opacity='0':getWidget.style.opacity='1'
-    }
-
-    const wheelParts: JSX.Element[] = list.map(e => {
-        return <div style={{ ...wheelPart(e), ...LUlLi }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${e}`} onClick={onClick} key={e}></div>
-    })
-
-    const PartContent: JSX.Element[] = list.map(e => {
-        return <div style={PartContentStyle(e)} key={e}>{elementList[e]&&elementList[e]}</div>
-    })
-
-
-    return <div style={L} ref={wheelRef}>
-        <div style={innerCircle} key={'-1'}>
-            {PartContent}
-            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 25 }} key={'-1'}>{centerText}</div>
-        </div>
-        {wheelParts}
-    </div>
 }
 
 function findEmpty() {
     let current = 0
-
     while (widgetsMap.get(current)) {
         current++
     }
-
     return current
 }
 
@@ -173,8 +162,8 @@ function wheelPart(num: number): React.CSSProperties {
         transform: `rotate(${36 * num}deg) skew(54deg)`,
     }
 }
-//y sin  x cos
-function PartContentStyle(num: number): React.CSSProperties {
+
+function PartContentStyle(num: number): React.CSSProperties { //place text content to wheel part
     return {
         position: 'absolute',
         left: Math.sin(num * 0.017453293 * 36) * 150 + 75,
