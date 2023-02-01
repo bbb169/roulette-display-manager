@@ -2,13 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { WidgetInfo, RouletteProps } from '../utils/roulette'
 import { innerCircle, L, LUlLi } from './react-css/css'
 
-const list: number[] = []
-const elementList: JSX.Element[] = []
-let widgetsMap: Map<number, WidgetInfo> = new Map()
-for (let index = 0; index < 10; index++) {
-    list.push(index)
-    elementList.push(<div key={index}></div>)
-}
+const elementList= Array.from({length:10}).map((e:any)=><div key={e}></div>) //init wheel parts
+let widgetsMap: Map<number, WidgetInfo> = new Map() //record used widget info
 
 export function Roulette(props:{allwidget:[ RouletteProps ]}) {
     const [centerText,setCenterText]:[string,any] = useState('')
@@ -24,14 +19,13 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
             })
         })
         elementList.forEach((e, i)=>{
-            if (widgetsMap.get(i)) {
+            if (widgetsMap.get(i)&&e) {
                 const info = widgetsMap.get(i) as WidgetInfo
                 e = <div key={i}>
                     <img src={info.icon}/>
                     {info.label}
                 </div>
             }
-            e
         })
     },[])
 
@@ -39,29 +33,21 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
         let locateAllow = false
         let keyDown = false
         let location: [number, number]
-        let reduce = false
+        let debounce: string | number | NodeJS.Timeout | null | undefined = null
         window.onmousemove = (e: MouseEvent) => {
-            if (!reduce) {
-                reduce = true
+            if (debounce!==null) clearTimeout(debounce)
+            debounce = setTimeout(() => {
                 location = [e.clientX, e.clientY]
-                setTimeout(() => {
-                    reduce = false
-                }, 200);
-            }
-            if (locateAllow) {
-                locateAllow = false
-                wheelRef.current.parentElement.style.left = location[0] - 200 + 'px'
-                wheelRef.current.parentElement.style.top = location[1] - 200 + 'px'
-                wheelRef.current.parentElement.style.position = 'fixed'
-                wheelRef.current.style.opacity = '1'
-            }
+                if (locateAllow) { //DO not change position of wheel if key down
+                    showWheel()
+                }
+            }, 50);
         }
         window.addEventListener('keydown', (e) => {
-            if (e.keyCode === 27) {
-                if (!keyDown) {
-                    locateAllow = true
-                    keyDown = true
-                }
+            if (e.keyCode === 27&&!keyDown) {
+                locateAllow = true
+                keyDown = true
+                showWheel()
             }
         })
         window.addEventListener('keyup', (e) => {
@@ -70,6 +56,14 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
                 keyDown = false
             }
         })
+
+        function showWheel() {
+            locateAllow = false
+            wheelRef.current.parentElement.style.left = location[0] - 200 + 'px'
+            wheelRef.current.parentElement.style.top = location[1] - 200 + 'px'
+            wheelRef.current.parentElement.style.position = 'fixed'
+            wheelRef.current.style.opacity = '1'
+        }
     }, [])
 
     return <div style={L} ref={wheelRef}>
@@ -81,14 +75,14 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
     </div>
 
     function wheelParts() {
-        return list.map(e => {
-            return <div style={{ ...wheelPart(e), ...LUlLi }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${e}`} onClick={onClick} key={e}></div>
+        return elementList.map((_,i) => {
+            return <div style={{ ...wheelPart(i), ...LUlLi }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${i}`} onClick={onClick} key={i}></div>
         })
     }
 
     function PartContent() {
-        return list.map(e => {
-            return <div style={PartContentStyle(e)} key={e}>{elementList[e]&&elementList[e]}</div>
+        return elementList.map((_,i) => {
+            return <div style={PartContentStyle(i)} key={i}>{elementList[i]&&elementList[i]}</div>
         })
     }
 
@@ -96,9 +90,7 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
         e.currentTarget.style.opacity = '0.3'
         e.currentTarget.style.border = '5px solid rgba(255, 255, 255, 0.3)'
         e.currentTarget.style.zIndex='1'
-        if (centerText) {
-            setCenterText('')
-        }
+        if (centerText) setCenterText('')
     }
 
     function onClick(e:React.MouseEvent<HTMLDivElement, MouseEvent>) {
