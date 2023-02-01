@@ -72,35 +72,6 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
         })
     }, [])
 
-
-    // const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = (e) => { //hightlight wheel part when mouse enter
-    //     e.currentTarget.style.opacity = '0.6'
-    //     e.currentTarget.style.border = 'none'
-    //     e.currentTarget.style.zIndex='9999'
-    //     let targetId = e.currentTarget.id.replace('wheel-', '')
-    //     console.log(7-Number(targetId))
-    //     if (widgetsMap.has(7-Number(targetId))) {
-    //         setCenterText(widgetsMap.get(7-Number(targetId))?.label)
-    //     }
-    // }
-
-    // const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = (e) => { //make wheel part back to normal
-    //     e.currentTarget.style.opacity = '0.3'
-    //     e.currentTarget.style.border = '5px solid rgba(255, 255, 255, 0.3)'
-    //     e.currentTarget.style.zIndex='1'
-    //     if (centerText) {
-    //         setCenterText('')
-    //     }
-        
-    // }
-
-    // const onClick :React.MouseEventHandler<HTMLDivElement> =(e)=>{
-    //     let targetId = e.currentTarget.id.replace('wheel-', '') //get id of wheel part
-    //     let getWidget = document.querySelector(`[roulette-id="${widgetsMap.get(7 - Number(targetId))?.id}"]`) as HTMLDivElement
-    //     if (!getWidget) return
-    //     getWidget?.style.opacity!='0'?getWidget.style.opacity='0':getWidget.style.opacity='1'
-    // }
-
     return <div style={L} ref={wheelRef}>
         <div style={innerCircle} key={'-1'}>
             {PartContent()}
