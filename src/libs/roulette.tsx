@@ -33,8 +33,6 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
         let locateAllow = true
         let location: [number, number]
         let debounce: string | number | NodeJS.Timeout | null | undefined = null
-        console.log(20)
-        
         window.onmousemove = (e: MouseEvent) => {
             if (debounce!==null) clearTimeout(debounce)
             debounce = setTimeout(() => {
