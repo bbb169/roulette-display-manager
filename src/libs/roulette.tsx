@@ -31,13 +31,16 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
 
     useEffect(() => { //show wheel when key "ESC" down
         let locateAllow = true
-        let location: [number, number]
-        let debounce: string | number | NodeJS.Timeout | null | undefined = null
+        let location = [0, 0]
+        let throttle:any = null
         window.onmousemove = (e: MouseEvent) => {
-            if (debounce!==null) clearTimeout(debounce)
-            debounce = setTimeout(() => {
-                if (locateAllow) location = [e.clientX, e.clientY] //DO not change position of wheel if key down
-            }, 20);
+            if (throttle) return
+            if (locateAllow) { //DO not change position of wheel if key down
+                location = [e.clientX, e.clientY]
+                throttle = setTimeout(() => {
+                    throttle = null
+                }, 100);
+            }
         }
         window.addEventListener('keydown', (e) => {
             if (e.keyCode === 27&&locateAllow) {
@@ -99,7 +102,6 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
         e.currentTarget.style.border = 'none'
         e.currentTarget.style.zIndex='9999'
         let targetId = e.currentTarget.id.replace('wheel-', '')
-        console.log(7-Number(targetId))
         if (widgetsMap.has(7-Number(targetId))) {
             setCenterText(widgetsMap.get(7-Number(targetId))?.label)
         }
