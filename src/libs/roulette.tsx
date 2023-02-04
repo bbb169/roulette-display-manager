@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { maskUrl } from '../utils/mask'
 import { WidgetInfo, RouletteProps } from '../utils/roulette'
 import { innerCircle, L, LUlLi } from './react-css/css'
 
@@ -8,6 +9,10 @@ let widgetsMap: Map<number, WidgetInfo> = new Map() //record used widget info
 export function Roulette(props:{allwidget:[ RouletteProps ]}) {
     const [centerText,setCenterText]:[string,any] = useState('')
     const wheelRef: React.MutableRefObject<any> = useRef(null)
+
+    useEffect(()=>{ // make innerbox transparent
+        maskUrl(document.getElementById("wheel-outCircle") as HTMLElement,document.getElementById("wheel-innerCircle") as HTMLElement)
+    },[])
 
     useEffect(()=>{ //set widget to wheel
         const widgets = props.allwidget
@@ -63,8 +68,8 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
         }
     }, [])
 
-    return <div style={L} ref={wheelRef}>
-        <div style={innerCircle} key={'-1'}>
+    return <div style={L} ref={wheelRef} id="wheel-outCircle">
+        <div style={innerCircle} key={'-1'} id="wheel-innerCircle">
             {PartContent()}
             <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 25 }} key={'-1'}>{centerText}</div>
         </div>
