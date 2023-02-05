@@ -1,5 +1,5 @@
 export interface WidgetInfo {
-    icon: any,
+    icon?: any,
     id: string,
     label: string
 }

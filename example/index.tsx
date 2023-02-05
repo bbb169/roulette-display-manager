@@ -6,7 +6,7 @@ import { Roulette } from '../.';
 const App = () => {
   return (
     <div>
-      <Roulette allwidget={[{icon:'',id:'1',label:'first',position:0}]}/>
+      <Roulette allwidget={[{icon:'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',id:'1',label:'first',position:0}]}/>
     </div>
   );
 };
