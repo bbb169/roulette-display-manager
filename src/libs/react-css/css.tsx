@@ -1,12 +1,11 @@
 import React from 'react'
 
 export const L:React.CSSProperties  = {
-    position: 'absolute',
+    position: 'relative',
     overflow: 'hidden',
     width: 400,
     height: 400,
     borderRadius: 200,
-    opacity: 0
 }
 
 export const innerCircle:React.CSSProperties  = {

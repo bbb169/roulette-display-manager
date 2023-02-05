@@ -16,12 +16,14 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
         locateWheel(wheelRef) //listen the position of mouse and move wheel to the position 
     },[])
 
-    return <div style={L} ref={wheelRef} id="wheel-outCircle">
-        <div style={innerCircle} key={'-1'} id="wheel-innerCircle">
-            {PartContent()}
-            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 25 }} key={'-1'}>{centerText}</div>
+    return <div ref={wheelRef} style={{position:'absolute',opacity:0}}>
+        <div style={L} id="wheel-outCircle">
+            <div style={innerCircle} key={'-1'} id="wheel-innerCircle">
+                {PartContent()}
+            </div>
+            {wheelParts()}
         </div>
-        {wheelParts()}
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 25 }} key={'-1'}>{centerText}</div>
     </div>
 
     function wheelParts() {
