@@ -10,63 +10,11 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
     const [centerText,setCenterText]:[string,any] = useState('')
     const wheelRef: React.MutableRefObject<any> = useRef(null)
 
-    useEffect(()=>{ // make innerbox transparent
-        maskUrl(document.getElementById("wheel-outCircle") as HTMLElement,document.getElementById("wheel-innerCircle") as HTMLElement)
+    useEffect(()=>{ 
+        maskUrl(document.getElementById("wheel-outCircle") as HTMLElement,document.getElementById("wheel-innerCircle") as HTMLElement) // make innerbox transparent
+        initWheelWidget(props.allwidget)  //set widgets to wheel
+        locateWheel(wheelRef) //listen the position of mouse and move wheel to the position 
     },[])
-
-    useEffect(()=>{ //set widget to wheel
-        const widgets = props.allwidget
-        widgets.forEach(e=>{
-            widgetsMap.set(e.position?e.position<10?e.position:findEmpty():findEmpty(), {
-                id:e.id,
-              icon: e.icon || '',
-              label: e.label
-            })
-        })
-        elementList.forEach((e, i)=>{
-            if (widgetsMap.get(i)&&e) {
-                const info = widgetsMap.get(i) as WidgetInfo
-                e = <div key={i}>
-                    <img src={info.icon}/>
-                    {info.label}
-                </div>
-            }
-        })
-    },[])
-
-    useEffect(() => { //show wheel when key "ESC" down
-        let locateAllow = true
-        let location = [0, 0]
-        let throttle:any = null
-        window.onmousemove = (e: MouseEvent) => {
-            if (throttle) return
-            if (locateAllow) { //DO not change position of wheel if key down
-                location = [e.clientX, e.clientY]
-                throttle = setTimeout(() => {
-                    throttle = null
-                }, 100);
-            }
-        }
-        window.addEventListener('keydown', (e) => {
-            if (e.keyCode === 27&&locateAllow) {
-                showWheel()
-            }
-        })
-        window.addEventListener('keyup', (e) => {
-            if (e.keyCode === 27) {
-                wheelRef.current.style.opacity = '0'
-                locateAllow = true
-            }
-        })
-
-        function showWheel() {
-            locateAllow = false
-            wheelRef.current.parentElement.style.left = location[0] - 200 + 'px'
-            wheelRef.current.parentElement.style.top = location[1] - 200 + 'px'
-            wheelRef.current.parentElement.style.position = 'fixed'
-            wheelRef.current.style.opacity = '1'
-        }
-    }, [])
 
     return <div style={L} ref={wheelRef} id="wheel-outCircle">
         <div style={innerCircle} key={'-1'} id="wheel-innerCircle">
@@ -134,5 +82,58 @@ function PartContentStyle(num: number): React.CSSProperties { //place text conte
         top: Math.cos(num * 0.017453293 * 36) * 150 + 75,
         width: 50,
         textAlign: 'center'
+    }
+}
+
+function initWheelWidget(widgets: [ RouletteProps ]) {
+    widgets.forEach(e=>{
+        widgetsMap.set(e.position?e.position<10?e.position:findEmpty():findEmpty(), {
+            id:e.id,
+          icon: e.icon || '',
+          label: e.label
+        })
+    })
+    elementList.forEach((e, i)=>{
+        if (widgetsMap.get(i)&&e) {
+            const info = widgetsMap.get(i) as WidgetInfo
+            e = <div key={i}>
+                <img src={info.icon}/>
+                {info.label}
+            </div>
+        }
+    })
+}
+
+function locateWheel(wheelRef:React.MutableRefObject<any>) {
+    let locateAllow = true
+    let location = [0, 0]
+    let throttle:any = null
+    window.onmousemove = (e: MouseEvent) => {
+        if (throttle) return
+        if (locateAllow) { //DO not change position of wheel if key down
+            location = [e.clientX, e.clientY]
+            throttle = setTimeout(() => {
+                throttle = null
+            }, 100);
+        }
+    }
+    window.addEventListener('keydown', (e) => {  //show wheel when key "ESC" down
+        if (e.keyCode === 27&&locateAllow) {
+            showWheel()
+        }
+    })
+    window.addEventListener('keyup', (e) => {
+        if (e.keyCode === 27) {
+            wheelRef.current.style.opacity = '0'
+            locateAllow = true
+        }
+    })
+
+    function showWheel() {
+        locateAllow = false
+        wheelRef.current.parentElement.style.left = location[0] - 200 + 'px'
+        wheelRef.current.parentElement.style.top = location[1] - 200 + 'px'
+        wheelRef.current.parentElement.style.position = 'fixed'
+        wheelRef.current.style.opacity = '1'
     }
 }
