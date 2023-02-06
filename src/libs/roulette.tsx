@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { maskUrl } from '../utils/mask'
 import { WidgetInfo, RouletteProps } from '../utils/roulette'
+import { Center } from './center'
 import { innerCircle, L, LUlLi } from './react-css/css'
 
 const elementList= Array.from({length:10}).map((e:any)=><div key={e}></div>) //init wheel parts
@@ -23,13 +24,7 @@ export function Roulette(props:{allwidget:[ RouletteProps ]}) {
             </div>
             {wheelParts()}
         </div>
-        {center.id&&
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'space-evenly',fontSize: 25 }} key={'-1'}>
-            {center.icon&&<div style={{width:100,height:100,overflow:'hidden'}}>
-                <img src={center.icon} width={100}/>
-                </div>}
-            <div>{center.label}</div>
-        </div>}
+        <Center center={center}/>
     </div>
 
     function wheelParts() {
