@@ -37,7 +37,6 @@ export const wheelPartCss = (radius:number) :React.CSSProperties=>{
         opacity: 0.3,
         transformOrigin: '100% 100%',
         backgroundColor: 'black',
-        border: '5px solid rgba(255, 255, 255, 0.3)',
         boxSizing: 'border-box',
     }
 }

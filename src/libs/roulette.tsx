@@ -41,7 +41,6 @@ export function Roulette({allwidget,radius}:{ allwidget:[ RouletteProps ], radiu
 
     function onMouseLeave (e:React.MouseEvent<HTMLDivElement, MouseEvent>) {
         e.currentTarget.style.opacity = '0.3'
-        e.currentTarget.style.border = '5px solid rgba(255, 255, 255, 0.3)'
         e.currentTarget.style.zIndex='1'
         if (center) setCenter({id:'',label:'',icon:''})
     }
@@ -55,7 +54,6 @@ export function Roulette({allwidget,radius}:{ allwidget:[ RouletteProps ], radiu
 
     function onMouseEnter(e:React.MouseEvent<HTMLDivElement, MouseEvent>) {
         e.currentTarget.style.opacity = '0.6'
-        e.currentTarget.style.border = 'none'
         e.currentTarget.style.zIndex='9999'
         let targetId = e.currentTarget.id.replace('wheel-', '')
         if (widgetsMap.has(7-Number(targetId))) {
