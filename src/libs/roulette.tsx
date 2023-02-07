@@ -2,34 +2,34 @@ import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 're
 import { maskUrl } from '../utils/mask'
 import { WidgetInfo, RouletteProps } from '../utils/roulette'
 import { Center } from './center'
-import { innerCircle, L, LUlLi } from './react-css/css'
+import { innerCircle, outCircle, wheelPartCss } from './react-css/css'
 
 const elementList= Array.from({length:10}).map((e:any)=><div key={e}></div>) //init wheel parts
 let widgetsMap: Map<number, WidgetInfo> = new Map() //record used widget info
 
-export function Roulette(props:{allwidget:[ RouletteProps ]}) {
+export function Roulette({allwidget,radius}:{ allwidget:[ RouletteProps ], radius?: number }) {
     const [center,setCenter]:[WidgetInfo,Dispatch<SetStateAction<WidgetInfo>>] = useState({id:'',label:''})
     const wheelRef: React.MutableRefObject<any> = useRef(null)
 
     useEffect(()=>{ 
         maskUrl(document.getElementById("wheel-outCircle") as HTMLElement,document.getElementById("wheel-innerCircle") as HTMLElement) // make innerbox transparent
-        initWheelWidget(props.allwidget)  //set widgets to wheel
+        initWheelWidget(allwidget)  //set widgets to wheel
         locateWheel(wheelRef) //listen the position of mouse and move wheel to the position 
     },[])
 
     return <div ref={wheelRef} style={{position:'absolute',opacity:'0'}}>
-        <div style={L} id="wheel-outCircle">
-            <div style={innerCircle} key={'-1'} id="wheel-innerCircle">
+        <div style={outCircle(radius||400)} id="wheel-outCircle">
+            <div style={innerCircle(radius||400)} key={'-1'} id="wheel-innerCircle">
                 {PartContent()}
             </div>
             {wheelParts()}
         </div>
-        <Center center={center}/>
+        <Center center={center} radius={radius||400}/>
     </div>
 
     function wheelParts() {
         return elementList.map((_,i) => {
-            return <div style={{ ...wheelPart(i), ...LUlLi }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${i}`} onClick={onClick} key={i}></div>
+            return <div style={{ ...wheelPart(i), ...wheelPartCss(radius||400) }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${i}`} onClick={onClick} key={i}></div>
         })
     }
 
