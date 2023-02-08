@@ -18,8 +18,8 @@ export function Roulette({allwidget,radius}:{ allwidget:[ RouletteProps ], radiu
     },[])
 
     return <div ref={wheelRef} style={{position:'absolute',opacity:'0'}}>
-        <div style={outCircle(radius||400)} id="wheel-outCircle">
-            <div style={innerCircle(radius||400)} key={'-1'} id="wheel-innerCircle">
+        <div style={outCircle(radius||400)} id="wheel-outCircle" className='roulette-out-circle'>
+            <div style={innerCircle(radius||400)} key={'-1'} id="wheel-innerCircle" className='roulette-inner-circle'>
                 {PartContent()}
             </div>
             {wheelParts()}
@@ -29,7 +29,7 @@ export function Roulette({allwidget,radius}:{ allwidget:[ RouletteProps ], radiu
 
     function wheelParts() {
         return elementList.map((_,i) => {
-            return <div style={{ ...wheelPart(i), ...wheelPartCss(radius||400) }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${i}`} onClick={onClick} key={i}></div>
+            return <div style={{ ...wheelPart(i), ...wheelPartCss(radius||400) }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${i}`} onClick={onClick} key={i} className='roulette-wheel-part'></div>
         })
     }
 
