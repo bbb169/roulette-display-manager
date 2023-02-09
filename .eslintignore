@@ -1,0 +1,11 @@
+dist/
+node_modules/
+
+webpack*.js
+**/*/init.js
+
+**/*.md
+**/*.mdx
+**/*.html
+**/*.json
+**/*.d.ts

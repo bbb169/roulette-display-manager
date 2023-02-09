@@ -1,3 +1,3 @@
-import { Roulette } from "./libs/roulette";
+import { Roulette } from './libs/roulette'
 
 export { Roulette }
