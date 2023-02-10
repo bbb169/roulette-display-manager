@@ -88,14 +88,14 @@ function PartContentStyle (num: number): React.CSSProperties { //place text cont
 }
 
 function initWheelWidget (widgets: [ RouletteProps ]) {
-  widgets.forEach(e => {
+  widgets.forEach(e => { //place widegts to wheel
     widgetsMap.set(e.position ? e.position < 10 ? e.position : findEmpty() : findEmpty(), {
       id: e.id,
       icon: e.icon || '',
       label: e.label
     })
   })
-  elementList.forEach((e, i) => {
+  elementList.forEach((e, i) => { //render widgets dom on wheel
     if (widgetsMap.get(i) && e) {
       const info = widgetsMap.get(i) as WidgetInfo
       e = <div key={i}>
