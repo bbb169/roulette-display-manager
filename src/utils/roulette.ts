@@ -5,3 +5,9 @@ export interface WidgetInfo {
 }
 
 export interface RouletteProps extends WidgetInfo { position?: number }
+
+export enum ShortcutKeys {
+  ctrl = 'ctrlKey',
+  alt = 'altKey',
+  shift = 'shiftKey'
+}

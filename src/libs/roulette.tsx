@@ -1,13 +1,13 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { maskUrl } from '../utils/mask'
-import { WidgetInfo, RouletteProps } from '../utils/roulette'
+import { WidgetInfo, RouletteProps, ShortcutKeys } from '../utils/roulette'
 import { Center } from './center'
 import { innerCircle, outCircle, wheelPartCss } from './react-css/css'
 
 const elementList = Array.from({ length: 10 }).map((e: any) => <div key={e}></div>) //init wheel parts
 const widgetsMap: Map<number, WidgetInfo> = new Map() //record used widget info
 
-export function Roulette ({ allwidget, radius }: { allwidget: [ RouletteProps ], radius?: number }) {
+export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.ctrl }: { allwidget: [ RouletteProps ], radius?: number, shortcutKey: ShortcutKeys }) {
   const [center, setCenter]: [WidgetInfo, Dispatch<SetStateAction<WidgetInfo>>] = useState({ id: '', label: '' })
   const wheelRef: React.MutableRefObject<any> = useRef(null)
 
@@ -15,7 +15,8 @@ export function Roulette ({ allwidget, radius }: { allwidget: [ RouletteProps ],
     maskUrl(document.getElementById('wheel-outCircle') as HTMLElement, document.getElementById('wheel-innerCircle') as HTMLElement) // make innerbox transparent
     initWheelWidget(allwidget) //set widgets to wheel
     displayWheel(wheelRef) //listen the position of mouse and move wheel to the position
-  }, [allwidget])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allwidget, shortcutKey])
 
   return <div ref={wheelRef} style={{ position: 'absolute', opacity: '0' }}>
         <div style={outCircle(radius || 400)} id="wheel-outCircle" className='roulette-out-circle'>
@@ -61,6 +62,30 @@ export function Roulette ({ allwidget, radius }: { allwidget: [ RouletteProps ],
       setCenter(target)
     }
   }
+
+  function displayWheel (wheelRef: React.MutableRefObject<any>) {
+    window.addEventListener('click', locateByClick)
+    window.addEventListener('keyup', hideWheel)
+
+    function locateByClick (evt: MouseEvent) {
+      if (evt.button !== 0 || !evt[shortcutKey] || wheelRef.current.style.opacity === '1') return
+      evt.preventDefault()
+      showWheel(evt.clientX, evt.clientY)
+    }
+
+    function showWheel (x: number, y: number) {
+      wheelRef.current.parentElement.style.left = x - 200 + 'px'
+      wheelRef.current.parentElement.style.top = y - 200 + 'px'
+      wheelRef.current.parentElement.style.position = 'fixed'
+      wheelRef.current.style.opacity = '1'
+    }
+
+    function hideWheel (evt: KeyboardEvent) {
+      if (evt[shortcutKey]) return
+      evt.preventDefault()
+      wheelRef.current.style.opacity = '0'
+    }
+  }
 }
 
 function findEmpty () {
@@ -104,28 +129,4 @@ function initWheelWidget (widgets: [ RouletteProps ]) {
             </div>
     }
   })
-}
-
-function displayWheel (wheelRef: React.MutableRefObject<any>) {
-  window.addEventListener('click', locateByClick)
-  window.addEventListener('keyup', hideWheel)
-
-  function locateByClick (evt: MouseEvent) {
-    if (evt.button !== 0 || !evt.ctrlKey || wheelRef.current.style.opacity === '1') return
-    evt.preventDefault()
-    showWheel(evt.clientX, evt.clientY)
-  }
-
-  function showWheel (x: number, y: number) {
-    wheelRef.current.parentElement.style.left = x - 200 + 'px'
-    wheelRef.current.parentElement.style.top = y - 200 + 'px'
-    wheelRef.current.parentElement.style.position = 'fixed'
-    wheelRef.current.style.opacity = '1'
-  }
-
-  function hideWheel (evt: KeyboardEvent) {
-    if (evt.ctrlKey) return
-    evt.preventDefault()
-    wheelRef.current.style.opacity = '0'
-  }
 }
