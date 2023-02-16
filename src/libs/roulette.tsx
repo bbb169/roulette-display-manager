@@ -14,7 +14,7 @@ export function Roulette ({ allwidget, radius }: { allwidget: [ RouletteProps ],
   useEffect(() => {
     maskUrl(document.getElementById('wheel-outCircle') as HTMLElement, document.getElementById('wheel-innerCircle') as HTMLElement) // make innerbox transparent
     initWheelWidget(allwidget) //set widgets to wheel
-    locateWheel(wheelRef) //listen the position of mouse and move wheel to the position
+    displayWheel(wheelRef) //listen the position of mouse and move wheel to the position
   }, [allwidget])
 
   return <div ref={wheelRef} style={{ position: 'absolute', opacity: '0' }}>
@@ -106,36 +106,26 @@ function initWheelWidget (widgets: [ RouletteProps ]) {
   })
 }
 
-function locateWheel (wheelRef: React.MutableRefObject<any>) {
-  let locateAllow = true
-  let location = [0, 0]
-  let throttle: any = null
-  window.onmousemove = (e: MouseEvent) => {
-    if (throttle) return
-    if (locateAllow) { //DO not change position of wheel if key down
-      location = [e.clientX, e.clientY]
-      throttle = setTimeout(() => {
-        throttle = null
-      }, 100)
-    }
-  }
-  window.addEventListener('keydown', (e) => { //show wheel when key "ESC" down
-    if (e.keyCode === 27 && locateAllow) {
-      showWheel()
-    }
-  })
-  window.addEventListener('keyup', (e) => {
-    if (e.keyCode === 27) {
-      wheelRef.current.style.opacity = '0'
-      locateAllow = true
-    }
-  })
+function displayWheel (wheelRef: React.MutableRefObject<any>) {
+  window.addEventListener('click', locateByClick)
+  window.addEventListener('keyup', hideWheel)
 
-  function showWheel () {
-    locateAllow = false
-    wheelRef.current.parentElement.style.left = location[0] - 200 + 'px'
-    wheelRef.current.parentElement.style.top = location[1] - 200 + 'px'
+  function locateByClick (evt: MouseEvent) {
+    if (evt.button !== 0 || !evt.ctrlKey || wheelRef.current.style.opacity === '1') return
+    evt.preventDefault()
+    showWheel(evt.clientX, evt.clientY)
+  }
+
+  function showWheel (x: number, y: number) {
+    wheelRef.current.parentElement.style.left = x - 200 + 'px'
+    wheelRef.current.parentElement.style.top = y - 200 + 'px'
     wheelRef.current.parentElement.style.position = 'fixed'
     wheelRef.current.style.opacity = '1'
+  }
+
+  function hideWheel (evt: KeyboardEvent) {
+    if (evt.ctrlKey) return
+    evt.preventDefault()
+    wheelRef.current.style.opacity = '0'
   }
 }
