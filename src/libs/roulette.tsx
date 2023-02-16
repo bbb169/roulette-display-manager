@@ -19,18 +19,18 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
   }, [allwidget, shortcutKey])
 
   return <div ref={wheelRef} style={{ position: 'absolute', opacity: '0' }}>
-        <div style={outCircle(radius || 400)} id="wheel-outCircle" className='roulette-out-circle'>
-            <div style={innerCircle(radius || 400)} key={'-1'} id="wheel-innerCircle" className='roulette-inner-circle'>
+        <div style={outCircle(radius)} id="wheel-outCircle" className='roulette-out-circle'>
+            <div style={innerCircle(radius)} key={'-1'} id="wheel-innerCircle" className='roulette-inner-circle'>
                 {PartContent()}
             </div>
             {wheelParts()}
         </div>
-        <Center center={center} radius={radius || 400}/>
+        <Center center={center} radius={radius}/>
     </div>
 
   function wheelParts () {
     return elementList.map((_, i) => {
-      return <div style={{ ...wheelPart(i), ...wheelPartCss(radius || 400) }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${i}`} onClick={onClick} key={i} className='roulette-wheel-part'></div>
+      return <div style={{ ...wheelPart(i), ...wheelPartCss(radius) }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${i}`} onClick={onClick} key={i} className='roulette-wheel-part'></div>
     })
   }
 
