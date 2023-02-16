@@ -1,7 +1,3 @@
-```Demo
-![XIBQ@XLO3D$4`J3O1SKIXH5](https://user-images.githubusercontent.com/102608263/219394082-2bf13e01-073c-42cf-8563-59f6eca9bcdb.png)
-![XIBQ@XLO3D$4`J3O1SKIXH5](https://user-images.githubusercontent.com/102608263/219394186-b8b18845-5ad1-4747-835e-a64ab0b6b2c8.png)
-
 ```bash
 npm start # or yarn start
 ```
