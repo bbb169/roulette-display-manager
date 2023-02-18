@@ -3,6 +3,12 @@ import * as React from 'react'
 import { createRoot } from '../node_modules/react-dom/client.js'
 import { Roulette } from '../.'
 
+interface WidgetInfo {
+  icon?: any
+  id: string
+  label: string
+}
+
 const App = () => {
   return (
     <div>
@@ -10,11 +16,11 @@ const App = () => {
         console.log('wheel showed')
       }} onHide={() => {
         console.log('wheel hided')
-      }} onSelect={(position, WidgetInfo, toHide) => {
-        console.log('selected', position, WidgetInfo, toHide)
-      }} onMouseEnter={(position, widget, hided) => {
+      }} onSelect={(position: Number, widget: WidgetInfo, toHide: boolean) => {
+        console.log('selected', position, widget, toHide)
+      }} onMouseEnter={(position: Number, widget: WidgetInfo | undefined, hided: boolean | undefined) => {
         console.log('entered', position, widget, hided)
-      }} onMouseLeave={(position, widget, hided) => {
+      }} onMouseLeave={(position: Number, widget: WidgetInfo | undefined, hided: boolean | undefined) => {
         console.log('left', position, widget, hided)
       }}/>
     </div>
