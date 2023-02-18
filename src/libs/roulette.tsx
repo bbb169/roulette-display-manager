@@ -1,13 +1,21 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { maskUrl } from '../utils/mask'
-import { WidgetInfo, RouletteProps, ShortcutKeys } from '../utils/roulette'
+import { WidgetInfo, RouletteProps, ShortcutKeys, ShortcutKeyCode } from '../utils/roulette'
 import { Center } from './center'
 import { innerCircle, outCircle, wheelPartCss } from './react-css/css'
 
 const elementList = Array.from({ length: 10 }).map((e: any) => <div key={e}></div>) //init wheel parts
 const widgetsMap: Map<number, WidgetInfo> = new Map() //record used widget info
 
-export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.ctrl }: { allwidget: [ RouletteProps ], radius?: number, shortcutKey: ShortcutKeys }) {
+export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.ctrl, onShow, onHide, onSelect, onMouseEnter, onMouseLeave }: {
+  allwidget: [ RouletteProps ]
+  radius?: number
+  shortcutKey?: ShortcutKeys
+  onShow?: () => void
+  onHide?: () => void
+  onSelect?: () => void
+  onMouseEnter?: () => void
+  onMouseLeave?: () => void }) {
   const [center, setCenter]: [WidgetInfo, Dispatch<SetStateAction<WidgetInfo>>] = useState({ id: '', label: '' })
   const wheelRef: React.MutableRefObject<any> = useRef(null)
 
@@ -30,7 +38,7 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
 
   function wheelParts () {
     return elementList.map((_, i) => {
-      return <div style={{ ...wheelPart(i), ...wheelPartCss(radius) }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} id={`wheel-${i}`} onClick={onClick} key={i} className='roulette-wheel-part'></div>
+      return <div style={{ ...wheelPart(i), ...wheelPartCss(radius) }} onMouseEnter={enterPart} onMouseLeave={leavePart} id={`wheel-${i}`} onClick={onClick} key={i} className='roulette-wheel-part'></div>
     })
   }
 
@@ -40,9 +48,10 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
     })
   }
 
-  function onMouseLeave (e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  function leavePart (e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.currentTarget.style.opacity = '0.3'
     e.currentTarget.style.zIndex = '1'
+    wheelIsShow() && onMouseLeave && onMouseLeave()
     if (center) setCenter({ id: '', label: '', icon: '' })
   }
 
@@ -51,12 +60,14 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
     const getWidget = document.querySelector(`[roulette-id="${widgetsMap.get(7 - Number(targetId))?.id}"]`) as HTMLDivElement
     if (!getWidget) return
     getWidget?.style.opacity !== '0' ? getWidget.style.opacity = '0' : getWidget.style.opacity = '1'
+    onSelect && onSelect()
   }
 
-  function onMouseEnter (e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  function enterPart (e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.currentTarget.style.opacity = '0.6'
     e.currentTarget.style.zIndex = '9999'
     const targetId = e.currentTarget.id.replace('wheel-', '')
+    wheelIsShow() && onMouseEnter && onMouseEnter()
     if (widgetsMap.has(7 - Number(targetId))) {
       const target = widgetsMap.get(7 - Number(targetId)) as WidgetInfo
       setCenter(target)
@@ -78,13 +89,19 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
       wheelRef.current.parentElement.style.top = y - 200 + 'px'
       wheelRef.current.parentElement.style.position = 'fixed'
       wheelRef.current.style.opacity = '1'
+      onShow && onShow()
     }
 
     function hideWheel (evt: KeyboardEvent) {
-      if (evt[shortcutKey]) return
+      if (evt.keyCode !== ShortcutKeyCode[shortcutKey]) return
       evt.preventDefault()
       wheelRef.current.style.opacity = '0'
+      onHide && onHide()
     }
+  }
+
+  function wheelIsShow () {
+    return wheelRef.current.style.opacity === '1'
   }
 }
 
