@@ -15,7 +15,7 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
   onHide?: () => void
   onSelect?: (position: Number, widget: WidgetInfo, toHide: boolean) => void
   onMouseEnter?: (position: Number, widget: WidgetInfo | undefined, hided: boolean | undefined) => void
-  onMouseLeave?: () => void }) {
+  onMouseLeave?: (position: Number, widget: WidgetInfo | undefined, hided: boolean | undefined) => void }) {
   const [center, setCenter]: [WidgetInfo, Dispatch<SetStateAction<WidgetInfo>>] = useState({ id: '', label: '' })
   const wheelRef: React.MutableRefObject<any> = useRef(null)
 
@@ -51,7 +51,10 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
   function leavePart (e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.currentTarget.style.opacity = '0.3'
     e.currentTarget.style.zIndex = '1'
-    wheelIsShow() && onMouseLeave && onMouseLeave()
+    const position = getPositionById(e.currentTarget.id)
+    const target = widgetsMap.get(position)
+    const widget = getWidget(widgetsMap.get(position)?.id as string) as HTMLDivElement
+    wheelIsShow() && onMouseLeave && onMouseLeave(position, target, widget ? widget?.style.opacity === '0' : undefined)
     if (center) setCenter({ id: '', label: '', icon: '' })
   }
 

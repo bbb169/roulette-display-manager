@@ -11,11 +11,11 @@ const App = () => {
       }} onHide={() => {
         console.log('wheel hided')
       }} onSelect={(position, WidgetInfo, toHide) => {
-        console.log(position, WidgetInfo, toHide)
+        console.log('selected', position, WidgetInfo, toHide)
       }} onMouseEnter={(position, widget, hided) => {
-        console.log(position, widget, hided)
-      }} onMouseLeave={() => {
-        console.log(5)
+        console.log('entered', position, widget, hided)
+      }} onMouseLeave={(position, widget, hided) => {
+        console.log('left', position, widget, hided)
       }}/>
     </div>
   )
