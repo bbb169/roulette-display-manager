@@ -16,40 +16,31 @@ cd example
 npm i # or yarn to install dependencies
 npm start # or yarn start
 ```
-
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**, we use [Parcel's aliasing](https://parceljs.org/module_resolution.html#aliases).
-
 To do a one-off build, use `npm run build` or `yarn build`.
 
 To run tests, use `npm test` or `yarn test`.
 
-## Configuration
+## 🔨 Usage
 
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
+```jsx
+import React from 'react';
+import { Roulette } from '../.'
 
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle analysis
-
-Calculates the real cost of your library using [size-limit](https://github.com/ai/size-limit) with `npm run size` and visulize it with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/example
-  index.html
-  index.tsx       # test your component here in a demo app
-  package.json
-  tsconfig.json
-/src  # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
+const App = () => {
+  return (
+    <div>
+      <Roulette allwidget={[{ icon: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png', id: '1', label: 'first', position: 0 }]} radius={500} onShow={() => {
+        console.log('wheel showed')
+      }} onHide={() => {
+        console.log('wheel hided')
+      }} onSelect={(position, WidgetInfo, toHide) => {
+        console.log('selected', position, WidgetInfo, toHide)
+      }} onMouseEnter={(position, widget, hided) => {
+        console.log('entered', position, widget, hided)
+      }} onMouseLeave={(position, widget, hided) => {
+        console.log('left', position, widget, hided)
+      }}/>
+    </div>
+  )
+}
 ```
