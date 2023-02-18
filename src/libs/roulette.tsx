@@ -14,7 +14,7 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
   onShow?: () => void
   onHide?: () => void
   onSelect?: (position: Number, widget: WidgetInfo, toHide: boolean) => void
-  onMouseEnter?: () => void
+  onMouseEnter?: (position: Number, widget: WidgetInfo | undefined, hided: boolean | undefined) => void
   onMouseLeave?: () => void }) {
   const [center, setCenter]: [WidgetInfo, Dispatch<SetStateAction<WidgetInfo>>] = useState({ id: '', label: '' })
   const wheelRef: React.MutableRefObject<any> = useRef(null)
@@ -56,8 +56,7 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
   }
 
   function onClick (e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    const targetId = e.currentTarget.id.replace('wheel-', '') //get id of wheel part
-    const position = 7 - Number(targetId)
+    const position = getPositionById(e.currentTarget.id)
     const getWidget = document.querySelector(`[roulette-id="${widgetsMap.get(position)?.id}"]`) as HTMLDivElement
     if (!getWidget) return
     getWidget?.style.opacity !== '0' ? getWidget.style.opacity = '0' : getWidget.style.opacity = '1'
@@ -67,12 +66,11 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
   function enterPart (e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.currentTarget.style.opacity = '0.6'
     e.currentTarget.style.zIndex = '9999'
-    const targetId = e.currentTarget.id.replace('wheel-', '')
-    wheelIsShow() && onMouseEnter && onMouseEnter()
-    if (widgetsMap.has(7 - Number(targetId))) {
-      const target = widgetsMap.get(7 - Number(targetId)) as WidgetInfo
-      setCenter(target)
-    }
+    const position = getPositionById(e.currentTarget.id)
+    const target = widgetsMap.get(position)
+    const widget = getWidget(widgetsMap.get(position)?.id as string) as HTMLDivElement
+    wheelIsShow() && onMouseEnter && onMouseEnter(position, target, widget ? widget?.style.opacity === '0' : undefined)
+    if (target) setCenter(target)
   }
 
   function displayWheel (wheelRef: React.MutableRefObject<any>) {
@@ -147,4 +145,12 @@ function initWheelWidget (widgets: [ RouletteProps ]) {
             </div>
     }
   })
+}
+
+function getPositionById (id: string) {
+  return 7 - Number(id.replace('wheel-', ''))
+}
+
+function getWidget (id: string) {
+  return document.querySelector(`[roulette-id="${id}"]`)
 }

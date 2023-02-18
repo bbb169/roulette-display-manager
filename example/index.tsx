@@ -12,8 +12,8 @@ const App = () => {
         console.log('wheel hided')
       }} onSelect={(position, WidgetInfo, toHide) => {
         console.log(position, WidgetInfo, toHide)
-      }} onMouseEnter={() => {
-        console.log(4)
+      }} onMouseEnter={(position, widget, hided) => {
+        console.log(position, widget, hided)
       }} onMouseLeave={() => {
         console.log(5)
       }}/>
