@@ -7,11 +7,11 @@ const App = () => {
   return (
     <div>
       <Roulette allwidget={[{ icon: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png', id: '1', label: 'first', position: 0 }]} radius={500} onShow={() => {
-        console.log(1)
+        console.log('wheel showed')
       }} onHide={() => {
-        console.log(2)
-      }} onSelect={() => {
-        console.log(3)
+        console.log('wheel hided')
+      }} onSelect={(position, WidgetInfo, toHide) => {
+        console.log(position, WidgetInfo, toHide)
       }} onMouseEnter={() => {
         console.log(4)
       }} onMouseLeave={() => {

@@ -13,7 +13,7 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
   shortcutKey?: ShortcutKeys
   onShow?: () => void
   onHide?: () => void
-  onSelect?: () => void
+  onSelect?: (position: Number, widget: WidgetInfo, toHide: boolean) => void
   onMouseEnter?: () => void
   onMouseLeave?: () => void }) {
   const [center, setCenter]: [WidgetInfo, Dispatch<SetStateAction<WidgetInfo>>] = useState({ id: '', label: '' })
@@ -57,10 +57,11 @@ export function Roulette ({ allwidget, radius = 400, shortcutKey = ShortcutKeys.
 
   function onClick (e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const targetId = e.currentTarget.id.replace('wheel-', '') //get id of wheel part
-    const getWidget = document.querySelector(`[roulette-id="${widgetsMap.get(7 - Number(targetId))?.id}"]`) as HTMLDivElement
+    const position = 7 - Number(targetId)
+    const getWidget = document.querySelector(`[roulette-id="${widgetsMap.get(position)?.id}"]`) as HTMLDivElement
     if (!getWidget) return
     getWidget?.style.opacity !== '0' ? getWidget.style.opacity = '0' : getWidget.style.opacity = '1'
-    onSelect && onSelect()
+    onSelect && onSelect(position, widgetsMap.get(position) as WidgetInfo, getWidget.style.opacity === '0')
   }
 
   function enterPart (e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
