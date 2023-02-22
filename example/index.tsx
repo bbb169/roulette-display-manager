@@ -16,8 +16,8 @@ const App = () => {
         console.log('wheel showed')
       }} onHide={() => {
         console.log('wheel hided')
-      }} onSelect={(position: Number, widget: WidgetInfo, toHide: boolean) => {
-        console.log('selected', position, widget, toHide)
+      }} onSelect={(position: Number, widget: WidgetInfo, toHide: boolean, widgetDom: HTMLElement) => {
+        console.log('selected', position, widget, toHide, widgetDom)
       }} onMouseEnter={(position: Number, widget: WidgetInfo | undefined, hided: boolean | undefined) => {
         console.log('entered', position, widget, hided)
       }} onMouseLeave={(position: Number, widget: WidgetInfo | undefined, hided: boolean | undefined) => {
