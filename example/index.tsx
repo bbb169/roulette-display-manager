@@ -1,7 +1,7 @@
 import 'react-app-polyfill/ie11'
 import * as React from 'react'
 import { createRoot } from '../node_modules/react-dom/client.js'
-import { Roulette } from '../.'
+import { Roulette, Drag } from '../.'
 
 interface WidgetInfo {
   icon?: any
@@ -23,6 +23,9 @@ const App = () => {
       }} onMouseLeave={(position: Number, widget: WidgetInfo | undefined, hided: boolean | undefined) => {
         console.log('left', position, widget, hided)
       }}/>
+      <Drag>
+      <div style={{ width: '100px', height: '20px', backgroundColor: 'red' }}></div>
+      </Drag>
     </div>
   )
 }

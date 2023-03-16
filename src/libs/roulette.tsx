@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { maskUrl } from '../utils/mask'
 import { WidgetInfo, RouletteProps, ShortcutKeys, ShortcutKeyCode } from '../utils/roulette'
-import { Center } from './center'
-import { innerCircle, outCircle, wheelPartCss } from './react-css/css'
+import { Center } from './roulette-center'
+import { innerCircle, outCircle, wheelPartCss } from './css/css'
 
 const elementList = Array.from({ length: 10 }).map((e: any) => <div key={e}></div>) //init wheel parts
 const widgetsMap: Map<number, WidgetInfo> = new Map() //record used widget info

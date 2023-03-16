@@ -1,3 +1,4 @@
+import { Drag } from './libs/drag'
 import { Roulette } from './libs/roulette'
 
-export { Roulette }
+export { Roulette, Drag }
